@@ -9,7 +9,7 @@
 
 ```
 brew install go
-go get github.com/segmentio/go-loggly-cli
+go get github.com/sunbit/go-loggly-cli
 ln -sf $(go env GOPATH)bin/go-loggly-cli /usr/local/bin
 go-loggly-cli --version
 ```
