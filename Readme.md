@@ -9,7 +9,7 @@
 
 ```
 brew install go
-go get github.com/sunbit/go-loggly-cli
+go get github.com/sunbit-dev/go-loggly-cli
 ln -sf $(go env GOPATH)bin/go-loggly-cli /usr/local/bin
 go-loggly-cli --version
 ```
@@ -33,7 +33,7 @@ go-loggly-cli --text --size 100 --account sunbit --user myuser --pass mypass jso
  I suggest creating an alias:
 
 ```sh
-alias logs='loggly --account segment --user tj --pass something'
+alias logs='go-loggly-cli --account segment --user tj --pass something'
 ```
 
  This is a great place to stick personal defaults as well. Since flags are clobbered
@@ -41,7 +41,7 @@ alias logs='loggly --account segment --user tj --pass something'
  still changing them via `log`:
 
 ```sh
-alias logs='loggly --account segment --user tj --pass something --size 5'
+alias logs='go-loggly-cli --account segment --user tj --pass something --size 5'
 ```
 
 ## License
