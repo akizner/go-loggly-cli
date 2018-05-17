@@ -1,13 +1,17 @@
 package main
 
-import "github.com/segmentio/go-loggly-search"
-import j "github.com/segmentio/go-simplejson"
-import "github.com/jehiah/go-strftime"
-import "strings"
-import "flag"
-import "time"
-import "fmt"
-import "os"
+import (
+	"flag"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+
+	//"github.com/davecgh/go-spew/spew"
+	"github.com/jehiah/go-strftime"
+	"github.com/segmentio/go-loggly-search"
+	j "github.com/segmentio/go-simplejson"
+)
 
 //
 // Version.
@@ -30,6 +34,7 @@ const usage = `
     --size <count>     response event count [100]
     --from <time>      starting time [-24h]
     --to <time>        ending time [now]
+    --text             output events in plaintext format
     --json             output json array of events
     --count            output total event count
     --version          output version information
@@ -65,6 +70,7 @@ const usage = `
 
 var flags = flag.NewFlagSet("loggly", flag.ExitOnError)
 var count = flags.Bool("count", false, "")
+var text = flags.Bool("text", false, "")
 var json = flags.Bool("json", false, "")
 var version = flags.Bool("version", false, "")
 var account = flags.String("account", "", "")
@@ -154,6 +160,12 @@ func main() {
 	res, err := c.Query(query).Size(*size).From(*from).To(*to).Fetch()
 	check(err)
 
+	// --text
+	if *text {
+		outputText(res.Events)
+		os.Exit(0)
+	}
+
 	// --json
 	if *json {
 		outputJson(res.Events)
@@ -162,6 +174,39 @@ func main() {
 
 	// formatted
 	output(res.Events)
+}
+
+//
+// Output as text.
+//
+
+func outputText(events []interface{}) {
+	for _, event := range events {
+		jsm := j.NewFromMap(event.(map[string]interface{}))
+		ev := jsm.Get("event").Get("json")
+
+		timestamp, err := ev.Get("timestamp").String()
+		if err != nil {
+			fmt.Println("XXXX")
+			continue
+		}
+
+		container, err := ev.Get("kubernetes").Get("container_name").String()
+		if err != nil {
+			fmt.Println("XXXX")
+			continue
+		}
+
+		log, err := ev.Get("log").String()
+		if err != nil {
+			fmt.Println("XXXX")
+			continue
+		}
+
+		//spew.Dump(event)
+
+		fmt.Printf("%s %s %s", timestamp, container, log)
+	}
 }
 
 //

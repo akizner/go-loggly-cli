@@ -8,27 +8,22 @@
   Quick install via go-get:
 
 ```
-$ go get github.com/segmentio/go-loggly-cli
-$ go-loggly-cli --version
+brew install go
+go get github.com/segmentio/go-loggly-cli
+ln -sf $(go env GOPATH)bin/go-loggly-cli /usr/local/bin
+go-loggly-cli --version
 ```
 
 ## Usage
 
 ```
+go-loggly-cli --help
+```
 
-  Usage: loggly [options] [query...]
+## Examples
 
-  Options:
-
-    --account <name>   account name
-    --user <name>      account username
-    --pass <word>      account password
-    --size <count>     response event count [100]
-    --from <time>      starting time [-24h]
-    --to <time>        ending time [now]
-    --json             output json array of events
-    --count            output total event count
-
+```
+go-loggly-cli --text --size 100 --account sunbit --user myuser --pass mypass json.kubernetes.container_name:purchase-service OR json.kubernetes.container_name:admin-service
 ```
 
 ## Setup
